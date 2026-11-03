@@ -1,0 +1,31 @@
+{
+  "name": "testing-feedback-kit",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A testing and feedback board you add to your own app with Claude Code. People file tickets, agents work them, and only a person marks one done.",
+  "license": "MIT",
+  "author": "Mani Kanasani",
+  "scripts": {
+    "demo": "vite --config demo/vite.config.ts",
+    "build": "tsc --noEmit && vite build --config demo/vite.config.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "check": "tsc --noEmit && vitest run",
+    "check:supabase": "vitest run tests/supabase.test.ts"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.14",
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "@supabase/supabase-js": "^2.118.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.2",
+    "vitest": "^5.1.0"
+  }
+}

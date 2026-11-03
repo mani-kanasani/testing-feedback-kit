@@ -1,0 +1,20 @@
+{
+  "name": "testing-feedback-mcp",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Lets an AI agent work the Testing and Feedback Kit's tickets: list, read, comment, and move to In review. Never close.",
+  "license": "MIT",
+  "bin": "server.mjs",
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "engines": {
+    "node": ">=20.6"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "@supabase/supabase-js": "^2.118.0",
+    "zod": "^4.6.5"
+  }
+}

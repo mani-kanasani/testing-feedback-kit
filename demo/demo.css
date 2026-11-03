@@ -1,0 +1,296 @@
+/* The invented host app around the kit. Only the demo uses this file. It also shows how an app sets the kit's
+   fonts: two lines on .fk. */
+
+.fk {
+  --fk-font: 'DM Sans', system-ui, sans-serif;
+  --fk-font-display: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
+}
+
+:root {
+  --demo-bg: #0d0f12;
+  --demo-side: #111419;
+  --demo-line: #232831;
+  --demo-text: #f5f3ee;
+  --demo-soft: #9aa3b1;
+  --demo-tile: #161a20;
+  color-scheme: dark;
+}
+
+:root[data-theme='light'] {
+  --demo-bg: #f4f2ee;
+  --demo-side: #ffffff;
+  --demo-line: #e3ded5;
+  --demo-text: #16181d;
+  --demo-soft: #5d6573;
+  --demo-tile: #ffffff;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(900px 500px at 85% -10%, rgb(242 96 12 / 0.1), transparent 60%),
+    radial-gradient(700px 400px at 0% 100%, rgb(143 179 255 / 0.06), transparent 60%),
+    var(--demo-bg);
+  background-attachment: fixed;
+  color: var(--demo-text);
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+
+.demo {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.demo__side {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  height: 100vh;
+  padding: 22px 16px;
+  border-right: 1px solid var(--demo-line);
+  background: color-mix(in srgb, var(--demo-side) 85%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+.demo__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--demo-text);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.demo__mark {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: linear-gradient(145deg, #ff761f, #f2600c 52%, #da5309);
+  color: #fff;
+  box-shadow: 0 0 22px rgb(242 96 12 / 0.35);
+}
+
+.demo__side nav {
+  display: grid;
+  gap: 2px;
+}
+
+.demo__side nav a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  color: var(--demo-soft);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.demo__side nav a:hover {
+  background: color-mix(in srgb, var(--demo-text) 6%, transparent);
+  color: var(--demo-text);
+}
+
+.demo__side nav a[aria-current='page'] {
+  background: color-mix(in srgb, #f2600c 16%, transparent);
+  color: var(--demo-text);
+  box-shadow: inset 2px 0 0 #f2600c;
+}
+
+.demo__count {
+  min-width: 22px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--demo-text) 10%, transparent);
+  font-size: 12px;
+  text-align: center;
+}
+
+.demo__note {
+  margin-top: auto;
+  color: var(--demo-soft);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.demo__main {
+  min-width: 0;
+}
+
+.demo__top {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 32px;
+  border-bottom: 1px solid var(--demo-line);
+  background: color-mix(in srgb, var(--demo-bg) 80%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+.demo__as {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--demo-soft);
+  font-size: 13px;
+}
+
+.demo__as select,
+.demo__ghost {
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--demo-line);
+  border-radius: 8px;
+  background: var(--demo-tile);
+  color: var(--demo-text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.demo__tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.demo__content {
+  padding: 28px 32px 120px;
+}
+
+.demo__page {
+  display: grid;
+  gap: 14px;
+  max-width: 1000px;
+}
+
+.demo__eyebrow {
+  margin: 0;
+  color: #ff8a3d;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.demo__page h1 {
+  margin: 0;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 32px;
+  letter-spacing: -0.02em;
+}
+
+.demo__lead {
+  max-width: 64ch;
+  margin: 0;
+  color: var(--demo-soft);
+}
+
+.demo__tiles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.demo__tile {
+  display: grid;
+  gap: 6px;
+  padding: 16px;
+  border: 1px solid var(--demo-line);
+  border-radius: 14px;
+  background: var(--demo-tile);
+  color: var(--demo-soft);
+  font-size: 13px;
+}
+
+.demo__tile strong {
+  color: var(--demo-text);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 28px;
+}
+
+.demo__rows {
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+  border: 1px solid var(--demo-line);
+  border-radius: 14px;
+  background: var(--demo-tile);
+}
+
+.demo__row {
+  height: 14px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--demo-text) 5%, transparent);
+}
+
+.demo__bar {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: color-mix(in srgb, var(--demo-text) 12%, transparent);
+}
+
+@media (max-width: 900px) {
+  .demo {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .demo__side {
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    height: auto;
+    padding: 12px 16px;
+    border-right: 0;
+    border-bottom: 1px solid var(--demo-line);
+  }
+
+  .demo__side nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .demo__side nav a {
+    padding: 7px 10px;
+    font-size: 13px;
+  }
+
+  .demo__note {
+    display: none;
+  }
+
+  .demo__top,
+  .demo__content {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .demo__tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
