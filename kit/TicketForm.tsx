@@ -44,7 +44,9 @@ export function TicketForm({
 
   const take = (list: FileList | null) => {
     if (!list) return;
-    setFiles((was) => [...was, ...Array.from(list)].slice(0, MAX_FILES));
+    // Copied now: the FileList is live, and emptying the picker below would empty it before React reads it.
+    const picked = Array.from(list);
+    setFiles((was) => [...was, ...picked].slice(0, MAX_FILES));
     if (picker.current) picker.current.value = '';
   };
 

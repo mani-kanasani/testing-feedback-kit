@@ -30,10 +30,10 @@ export function FeedbackBell({ api, hrefFor, onNavigate, theme = 'auto' }: Feedb
   // is moved right until it fits.
   useLayoutEffect(() => {
     const el = panel.current;
-    if (!open || !el) return;
-    el.style.right = '0px';
-    const left = el.getBoundingClientRect().left;
-    if (left < 8) el.style.right = `${left - 8}px`;
+    if (!open || !el || !box.current) return;
+    // Measured from the bell and the list's own width, never from the list's box, which is mid-animation here.
+    const left = box.current.getBoundingClientRect().right - el.offsetWidth;
+    el.style.right = left < 8 ? `${left - 8}px` : '0px';
   }, [open]);
 
   const load = useCallback(async () => {

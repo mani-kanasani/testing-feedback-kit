@@ -3,9 +3,10 @@
    To make it look like your app, change the --fk-* colours below to your own (INSTALL.md, "Make it look like your app").
    The kit uses your app's font unless you set --fk-font. */
 
-/* ---------- the colours: dark by default, light on request or when the reader's system is light */
+/* ---------- the colours: dark by default, light on request or when the reader's system is light.
+   Inside :where(), so they weigh nothing: a plain .fk { --fk-accent: ... } in your own CSS wins, loaded before or after. */
 
-.fk {
+:where(.fk) {
   --fk-card: #15181e;
   --fk-surface: #1d222b;
   --fk-surface-hover: #242a35;
@@ -44,7 +45,7 @@
   color-scheme: dark;
 }
 
-.fk[data-fk-theme='light'] {
+:where(.fk[data-fk-theme='light']) {
   --fk-card: #ffffff;
   --fk-surface: #f5f3ef;
   --fk-surface-hover: #ede9e2;
@@ -73,7 +74,7 @@
 }
 
 @media (prefers-color-scheme: light) {
-  .fk[data-fk-theme='auto'] {
+  :where(.fk[data-fk-theme='auto']) {
     --fk-card: #ffffff;
     --fk-surface: #f5f3ef;
     --fk-surface-hover: #ede9e2;

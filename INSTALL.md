@@ -53,7 +53,8 @@ Then tell the person in a few lines what you found and what you will do, and ask
 ## 2. Copy the kit in
 
 Clone this repository outside the app (`git clone --depth 1 https://github.com/mani-kanasani/testing-feedback-kit`)
-and copy the folder `kit/` into the app, for example as `src/feedback/`. Copy it whole, `LICENSE` included.
+and copy the folder `kit/` into the app, for example as `src/feedback/`. Copy it whole, `LICENSE` included. On
+Windows, if the clone stops with "Filename too long", clone into a shorter folder or add `-c core.longpaths=true`.
 
 `kit/supabase.ts` imports a type from `@supabase/supabase-js`. On another backend, leave that file out.
 
@@ -70,33 +71,48 @@ import './feedback/feedback.css';
 
 Every class starts with `fk-` and everything sits under `.fk`, so nothing leaks into the app.
 
-**Make it look like the app.** The colours are CSS variables at the top of `feedback.css`. Do not edit that file: set
-them in the app's own CSS instead, on `.fk`, pointing at the app's own colours. The ones that matter most:
+**Pick the theme first.** Every component takes `theme`: `"dark"`, `"light"`, or `"auto"` (the default, which
+follows the reader's system). An app with only a light look passes `"light"` everywhere, and an app with only a dark
+look passes `"dark"`, or the kit can turn dark on a dark system while the app around it stays white. An app with its
+own light and dark switch passes its current value.
+
+**Make it look like the app.** The colours are CSS variables at the top of `feedback.css`, and they weigh nothing, so
+a plain `.fk` rule in the app's own CSS wins wherever it is loaded. Do not edit `feedback.css`: set them in the app's
+CSS, pointing at the app's own colours. Set all of these, or the parts you leave out keep the kit's warm greys:
 
 ```css
 .fk {
-  --fk-accent: var(--your-brand);          /* buttons, the selected tab, links */
+  --fk-accent: var(--your-brand);          /* buttons, the selected tab, focus */
   --fk-accent-bright: var(--your-brand);   /* In progress, glows */
   --fk-accent-text: var(--your-brand);     /* links and small labels on the background */
   --fk-accent-gradient: linear-gradient(145deg, var(--your-brand), var(--your-brand));
-  --fk-card: var(--your-card);
-  --fk-surface: var(--your-surface);
+  --fk-accent-halo: color-mix(in srgb, var(--your-brand) 22%, transparent);
+  --fk-card: var(--your-card);             /* panels and dialogs */
+  --fk-surface: var(--your-surface);       /* cards, tabs, buttons */
+  --fk-surface-hover: var(--your-hover);
+  --fk-sunk: var(--your-input-background); /* inputs and quiet boxes */
+  --fk-border: var(--your-border);
+  --fk-input-border: var(--your-input-border);
   --fk-text: var(--your-text);
+  --fk-text-soft: var(--your-text-soft);
+  --fk-text-muted: var(--your-text-muted);
   --fk-font: inherit;                      /* the app's font; the default */
 }
 ```
 
-Every component takes `theme`: `"dark"`, `"light"`, or `"auto"` (the default, which follows the reader's system).
-If the app has its own light and dark switch, pass its current value.
+An app with both themes sets them twice, on `.fk[data-fk-theme='light']` and `.fk[data-fk-theme='dark']`. Look at
+the result on the page before you call it done: an input that stays beige on a grey app means a variable was missed.
 
 ## 4. The backend
 
 ### 4a. Supabase with Supabase Auth
 
-1. Copy `supabase/migrations/20261103000000_testing_feedback.sql` into the app's `supabase/migrations/`, renamed with
-   a timestamp later than the newest one there.
-2. Apply it to the **local or development** database only: `npx supabase migration up` against a local stack, or
-   the way this project already applies migrations. Production waits for the person's yes.
+1. If the app keeps its migrations in `supabase/migrations/` (the Supabase command line), copy
+   `supabase/migrations/20261103000000_testing_feedback.sql` there, renamed with a timestamp later than the newest one.
+   If it has no such folder, do not set one up: the file goes in through the SQL editor or psql in the next point.
+2. Apply it to the **local or development** database only: `npx supabase migration up` against a local stack, the
+   way this project already applies migrations, or by pasting the file into the SQL editor of the development project.
+   Production waits for the person's yes.
 3. Add the first approver. In the SQL editor, or with psql against the database (never as a committed migration,
    because it holds a person's address):
 
@@ -202,17 +218,26 @@ A hash router, or no router at all: `useHashPath('feedback')` from the kit gives
 
 **The menu.** One item to the page, called "Testing and feedback" or "Feedback".
 
-**The parts of the app.** `AREAS` is the menu's items in its order, then `'Something else'`:
+**The parts of the app.** `AREAS` is the menu's items in its order, the Feedback page itself included, then
+`'Something else'`. Beside it, a small function that turns the current route into one of them, for the button:
 
 ```ts
-export const AREAS = ['Dashboard', 'Projects', 'Billing', 'Settings', 'Something else'];
+export const AREAS = ['Dashboard', 'Projects', 'Billing', 'Settings', 'Feedback', 'Something else'];
+
+export function areaFor(pathname: string) {
+  if (pathname.startsWith('/projects')) return 'Projects';
+  if (pathname.startsWith('/billing')) return 'Billing';
+  if (pathname.startsWith('/settings')) return 'Settings';
+  if (pathname.startsWith('/feedback')) return 'Feedback';
+  return pathname === '/' ? 'Dashboard' : 'Something else';
+}
 ```
 
 **The button.** Once, in the layout every signed-in page shares. It shows itself only to people on the list. Pass
 the part of the app the person is on, so the form starts there:
 
 ```tsx
-<FeedbackButton api={feedbackApi} areas={AREAS} area={currentArea} hrefFor={(p) => `/feedback/${p}`} onNavigate={(p) => navigate(`/feedback/${p}`)} />
+<FeedbackButton api={feedbackApi} areas={AREAS} area={areaFor(location.pathname)} hrefFor={(p) => `/feedback/${p}`} onNavigate={(p) => navigate(`/feedback/${p}`)} />
 ```
 
 It sends the page's path (never the query string or the part after `#`) and the screen size and browser. With a hash
@@ -302,6 +327,8 @@ Run the app and go through these, as two different people where it says so:
 6. With the agent: `list_tickets`, then `move_ticket` to In progress and In review on a test ticket. Ask it to move a
    ticket to Done: it cannot.
 7. Look at the page at a phone's width and at a laptop's, in the app's light and dark themes.
+8. Run the app's own type check and build. In a Vite app made from the template, `npx tsc --noEmit` checks nothing
+   (its root `tsconfig.json` lists no files): use `npx tsc -b` or `npm run build`.
 
 With Supabase, the same checks run as a script against a **local** database. In the kit's clone:
 
@@ -317,7 +344,7 @@ npm run check:supabase
 ```
 
 It makes five test accounts, runs every rule through the real Supabase adapter and the agent server, and takes it all
-away again. It refuses a project that is not on this computer unless `FEEDBACK_CHECK_REMOTE=yes` is set, and it is
+away again. Ticket numbers it used are not given out again, so the first real ticket afterwards may not be number 1. It refuses a project that is not on this computer unless `FEEDBACK_CHECK_REMOTE=yes` is set, and it is
 never for production.
 
 ## 9. Report
